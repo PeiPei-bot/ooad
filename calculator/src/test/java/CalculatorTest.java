@@ -28,7 +28,7 @@ public class CalculatorTest {
 
     @Test
     public void 커스텀_구분자로_구분하여_더한다() {
-        // FIXME 요구사항에 기능에 없는 대한 테스트이다.
+        // FIXME 요구사항에 없는 조건에 대한 테스트이다.
         // 지나친 테스트는 유지보수를 더 힘들게 한다.
         // 꼭 필요한 테스트만 작성하는 것도 중요한 능력이다.
         // assertEquals(0, calculator.add("//;\n"));
@@ -56,13 +56,21 @@ public class CalculatorTest {
 
     class StringCalculator {
         public int add(String formula) {
-            // 기저사례. 공식이 없다
+            // 기저사례1. null 을 입력받는다
             if (formula == null)
                 return -1;
 
+            // 기저사례2. 빈 공식을 입력받는다
             if (formula.isEmpty())
                 return 0;
 
+            String [] numbers = extractNumbersAsString(formula);
+            int sum = addAll(numbers);
+
+            return sum;
+        }
+
+        private String[] extractNumbersAsString(String formula) {
             String [] numbers = null;
 
             Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(formula);
@@ -76,6 +84,10 @@ public class CalculatorTest {
                 numbers = formula.split(",|:");
             }
 
+            return numbers;
+        }
+
+        private int addAll(String[] numbers) {
             int sum = 0;
 
             for (String each : numbers) {
