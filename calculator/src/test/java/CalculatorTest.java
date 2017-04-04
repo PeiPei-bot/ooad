@@ -45,32 +45,30 @@ public class CalculatorTest {
 
     @Test(expected = RuntimeException.class)
     public void 음수를_입력하면_런타임_예외가_발생한다() {
-        assertEquals((1+2+3), calculator.add("-1,-1:-1"));
+        assertEquals((1+1+1), calculator.add("-1,-1:-1"));
     }
 
     class StringCalculator {
         public int add(String formula) {
-            // 기저사례1. null 을 입력받는다
-            if (formula == null)
-                return -1;
-
-            // 기저사례2. 빈 공식을 입력받는다
-            if (formula.isEmpty())
+            if (isEmpty(formula))
                 return 0;
 
             List<DisplayNumber> numbers = extractNumbers(formula);
-            return addAll(numbers);
+            return sum(numbers);
+        }
+
+        private boolean isEmpty(String formula) {
+            return  (formula == null || formula.isEmpty());
         }
 
         private List<DisplayNumber> extractNumbers(String formula) {
-            Rule rule = decideRules(formula);
+            Rule rule = match(formula);
             String [] textNumbers = rule.split(formula);
 
-            List<DisplayNumber> numbers = convert(textNumbers);
-            return numbers;
+            return convert(textNumbers);
         }
 
-        private Rule decideRules(String formula) {
+        private Rule match(String formula) {
             Rule rule;
 
             if (formula.startsWith("//")) {
@@ -78,6 +76,7 @@ public class CalculatorTest {
             } else {
                 rule = new RuleBasic();
             }
+
             return rule;
         }
 
@@ -90,9 +89,8 @@ public class CalculatorTest {
             return numbers;
         }
 
-        private int addAll(List<DisplayNumber> numbers) {
+        private int sum(List<DisplayNumber> numbers) {
             int sum = 0;
-
             for (DisplayNumber number : numbers) {
                 sum += number.getValue();
             }
