@@ -1,6 +1,8 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,13 +47,7 @@ public class CalculatorTest {
 
     @Test(expected = RuntimeException.class)
     public void 음수를_입력하면_런타임_예외가_발생한다() {
-        assertEquals((1+2+3), calculator.add("A,B:C"));
         assertEquals((1+2+3), calculator.add("-1,-1:-1"));
-        assertEquals((1+2+3), calculator.add("-1,2,3"));
-
-        assertEquals((1+2+3), calculator.add("//;\nA;B;3"));
-        assertEquals((1+2+3), calculator.add("//;\n1;C;3"));
-        assertEquals((1+2+3), calculator.add("//,\n1,-3,;3"));
     }
 
     class StringCalculator {
@@ -64,34 +60,36 @@ public class CalculatorTest {
             if (formula.isEmpty())
                 return 0;
 
-            String [] numbers = extractNumbersAsString(formula);
-            int sum = addAll(numbers);
-
-            return sum;
+            List<DisplayNumber> numbers = extractNumbersAsString(formula);
+            return addAll(numbers);
         }
 
-        private String[] extractNumbersAsString(String formula) {
-            String [] numbers = null;
-
+        private List<DisplayNumber> extractNumbersAsString(String formula) {
+            String [] textNumbers = null;
             Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(formula);
-
             if (matcher.find()) {
                 String customDelimiter = matcher.group(1);
-                numbers =  matcher.group(2).split(customDelimiter);
+                textNumbers =  matcher.group(2).split(customDelimiter);
             }
 
-            if (numbers == null) {
-                numbers = formula.split(",|:");
+            if (textNumbers == null) {
+                textNumbers = formula.split(",|:");
+            }
+
+            List<DisplayNumber> numbers = new ArrayList<>();
+            for (String number : textNumbers) {
+                DisplayNumber displayNumber = new DisplayNumber(number);
+                numbers.add(displayNumber);
             }
 
             return numbers;
         }
 
-        private int addAll(String[] numbers) {
+        private int addAll(List<DisplayNumber> numbers) {
             int sum = 0;
 
-            for (String each : numbers) {
-                sum += Integer.parseInt(each);
+            for (DisplayNumber number : numbers) {
+                sum += number.getValue();
             }
 
             return sum;
