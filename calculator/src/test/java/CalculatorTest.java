@@ -3,8 +3,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -60,28 +58,35 @@ public class CalculatorTest {
             if (formula.isEmpty())
                 return 0;
 
-            List<DisplayNumber> numbers = extractNumbersAsString(formula);
+            List<DisplayNumber> numbers = extractNumbers(formula);
             return addAll(numbers);
         }
 
-        private List<DisplayNumber> extractNumbersAsString(String formula) {
-            String [] textNumbers = null;
-            Matcher matcher = Pattern.compile("//(.)\n(.*)").matcher(formula);
-            if (matcher.find()) {
-                String customDelimiter = matcher.group(1);
-                textNumbers =  matcher.group(2).split(customDelimiter);
-            }
+        private List<DisplayNumber> extractNumbers(String formula) {
+            Rule rule = decideRules(formula);
+            String [] textNumbers = rule.split(formula);
 
-            if (textNumbers == null) {
-                textNumbers = formula.split(",|:");
-            }
+            List<DisplayNumber> numbers = convert(textNumbers);
+            return numbers;
+        }
 
+        private Rule decideRules(String formula) {
+            Rule rule;
+
+            if (formula.startsWith("//")) {
+                rule = new RuleCustom();
+            } else {
+                rule = new RuleBasic();
+            }
+            return rule;
+        }
+
+        private List<DisplayNumber> convert(String [] textNumbers) {
             List<DisplayNumber> numbers = new ArrayList<>();
             for (String number : textNumbers) {
                 DisplayNumber displayNumber = new DisplayNumber(number);
                 numbers.add(displayNumber);
             }
-
             return numbers;
         }
 
