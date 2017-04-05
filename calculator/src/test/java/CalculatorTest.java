@@ -1,8 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -34,68 +33,22 @@ public class CalculatorTest {
         // assertEquals(0, calculator.add("//;\n"));
         assertEquals((1+2),     calculator.add("//;\n1;2"));
         assertEquals((1+2+3),   calculator.add("//,\n1,2,3"));
-        assertEquals((1+2+3+4), calculator.add("//@\n1@2@3@4@"));
+        assertEquals((1+2+3+4), calculator.add("//@\n1@2@3@4"));
     }
 
     @Test
     public void javaAPITest() {
         assertTrue("//;\n".startsWith("//"));
         assertTrue("//;\n".endsWith("\n"));
+        assertTrue(Pattern.compile("//(.)\n(.*)").matcher("//;\n1;2;3").find());
+        assertTrue(Pattern.compile("(.)(;|,)(.)").matcher("1,2;3").find());
     }
 
     @Test(expected = RuntimeException.class)
     public void 음수를_입력하면_런타임_예외가_발생한다() {
-        assertEquals((1+1+1), calculator.add("-1,-1:-1"));
+        assertEquals(((-1)+(-1)+(-1)), calculator.add("-1,-1:-1"));
     }
 
-    class StringCalculator {
-        public int add(String formula) {
-            if (isEmpty(formula))
-                return 0;
+    
 
-            List<DisplayNumber> numbers = extractNumbers(formula);
-            return sum(numbers);
-        }
-
-        private boolean isEmpty(String formula) {
-            return  (formula == null || formula.isEmpty());
-        }
-
-        private List<DisplayNumber> extractNumbers(String formula) {
-            Rule rule = match(formula);
-            String [] textNumbers = rule.split(formula);
-
-            return convert(textNumbers);
-        }
-
-        private Rule match(String formula) {
-            Rule rule;
-
-            if (formula.startsWith("//")) {
-                rule = new RuleCustom();
-            } else {
-                rule = new RuleBasic();
-            }
-
-            return rule;
-        }
-
-        private List<DisplayNumber> convert(String [] textNumbers) {
-            List<DisplayNumber> numbers = new ArrayList<>();
-            for (String number : textNumbers) {
-                DisplayNumber displayNumber = new DisplayNumber(number);
-                numbers.add(displayNumber);
-            }
-            return numbers;
-        }
-
-        private int sum(List<DisplayNumber> numbers) {
-            int sum = 0;
-            for (DisplayNumber number : numbers) {
-                sum += number.getValue();
-            }
-
-            return sum;
-        }
-    }
 }

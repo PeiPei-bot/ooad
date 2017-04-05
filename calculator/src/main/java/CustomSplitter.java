@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
  * @author Kj Nam
  * @since 2017-04-04
  */
-public class RuleCustom implements Rule {
+public class CustomSplitter implements Splitter {
 
     @Override
     public String[] split(String formula) {
@@ -18,5 +18,10 @@ public class RuleCustom implements Rule {
         }
 
         return textNumbers;
+    }
+
+    @Override
+    public boolean support(String formula) {
+        return formula.matches("^\\/\\/(.+)\n((?:\\d+)(?:\\1\\d+)*)$");
     }
 }
