@@ -4,16 +4,16 @@
  */
 public class Frame {
     Roll[] rolls = new Roll[2];
+    int score;
 
-    public Frame() {
+    public Frame(int firstThrow, int secondThrow) {
+        score = firstThrow + secondThrow;
     }
 
     public void roll(int pins) {
     }
 
     public int score() {
-        int score  = 0;
-
         return score;
     }
 }
