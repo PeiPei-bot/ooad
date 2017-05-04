@@ -73,4 +73,47 @@ public class GameTest {
         rollMany(12, 10);
         assertThat(game.score(), is(300));
     }
+
+    // 아래는 클래스로 분리 된 디자인을 테스트 하기 위한 코드
+
+    @Test
+    public void threes() {
+        manyOpenFrames(10, 3, 3);
+        assertThat(game.frameScore(), is(60));
+    }
+
+    @Test
+    public void gutter() {
+        manyOpenFrames(10, 0, 0);
+        assertThat(game.frameScore(), is(0));
+    }
+
+    @Test
+    public void spare() {
+        game.spare(4, 6);
+        game.openFrame(3, 5);
+        manyOpenFrames(8, 0, 0);
+        assertThat(game.frameScore(), is(21));
+    }
+
+    @Test
+    public void spare2() {
+        game.spare(4, 6);
+        game.openFrame(5, 3);
+        manyOpenFrames(8, 0, 0);
+        assertThat(game.frameScore(), is(23));
+    }
+
+    @Test
+    public void strike() {
+        game.strike();
+        game.openFrame(5, 3);
+        manyOpenFrames(8, 0, 0);
+        assertThat(game.frameScore(), is(26));
+    }
+
+    private void manyOpenFrames(int count, int firstThrow, int secondThrow) {
+        for (int frameNumber = 0; frameNumber < count; frameNumber++)
+            game.openFrame(firstThrow, secondThrow);
+    }
 }

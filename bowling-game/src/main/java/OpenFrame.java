@@ -1,19 +1,20 @@
+import java.util.List;
+
 /**
  * @author Kj Nam
  * @since 2017-04-08
  */
-public class Frame {
-    Roll[] rolls = new Roll[2];
-    int score;
+public class OpenFrame extends Frame {
 
-    public Frame(int firstThrow, int secondThrow) {
-        score = firstThrow + secondThrow;
+    public OpenFrame(List<Integer> tumble, int firstTumble, int secondTumble) {
+        super(tumble);
+        tumble.add(firstTumble);
+        tumble.add(secondTumble);
     }
 
-    public void roll(int pins) {
-    }
-
+    @Override
     public int score() {
-        return score;
+        return tumble.get(startingTumble
+        ) + tumble.get(startingTumble + 1);
     }
 }

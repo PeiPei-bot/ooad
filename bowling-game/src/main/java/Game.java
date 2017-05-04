@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Kj Nam
  * @since 2017-04-08
@@ -5,9 +8,33 @@
 public class Game {
     private int[] rolls = new int[21];
     private int currentRoll = 0;
+    List<IFrame> frames = new ArrayList<>();
+    List<Integer> tumble = new ArrayList<>();
 
     public void roll(int pins) {
         rolls[currentRoll++] = pins;
+    }
+
+    public void openFrame(int firstTumble, int secondTumble) {
+        tumble.add(firstTumble);
+        tumble.add(secondTumble);
+        frames.add(new OpenFrame(tumble, firstTumble, secondTumble));
+    }
+
+    public int frameScore() {
+        int total = 0;
+        for (IFrame IFrame : frames) {
+            total += IFrame.score();
+        }
+        return total;
+    }
+
+    public void spare(int firstTumble, int secondTumble) {
+        frames.add(new SpareFrame(tumble, firstTumble, secondTumble));
+    }
+
+    public void strike() {
+        frames.add(new StrikeFrame(tumble));
     }
 
     public int score() {
