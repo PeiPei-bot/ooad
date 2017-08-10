@@ -3,11 +3,12 @@ package io.iamkyu;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -24,8 +25,12 @@ public class Main {
     public static final String ITEM_ID_AS_LOGIN = "auction-%s";
     public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
 
+    public static final String JOIN_COMMAND_FORMAT = "SQLVersion: 1.1; Command: JOIN;";
+    public static final String BID_COMMAND_FORMAT = "SQLVersion: 1.1; Command: BID; Price: %d";
+
     public static final String STATUS_JOINING = "Joining";
     public static final String STATUS_LOST = "Lost";
+    public static final String STATUS_BIDDING = "Bidding";
 
     private MainWindow ui;
     private Chat notToBeGCd;
@@ -40,12 +45,22 @@ public class Main {
     }
 
     private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
+        disconnectWhenUICloses(connection);
         Chat chat = connection.getChatManager().createChat(
                 auctionId(itemId, connection),
                 (chat1, message) -> SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_LOST))
         );
         this.notToBeGCd = chat;
-        chat.sendMessage(new Message());
+        chat.sendMessage(JOIN_COMMAND_FORMAT);
+    }
+
+    private void disconnectWhenUICloses(XMPPConnection connection) {
+        ui.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connection.disconnect();
+            }
+        });
     }
 
     private static XMPPConnection connection(String hostName, String userName, String password) throws XMPPException {

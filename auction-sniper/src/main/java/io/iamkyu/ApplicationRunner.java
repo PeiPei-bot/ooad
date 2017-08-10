@@ -5,6 +5,7 @@ import org.jivesoftware.smack.XMPPException;
 import java.lang.reflect.InvocationTargetException;
 
 import static io.iamkyu.FakeAuctionServer.XMPP_HOSTNAME;
+import static io.iamkyu.Main.STATUS_BIDDING;
 import static io.iamkyu.Main.STATUS_JOINING;
 import static io.iamkyu.Main.STATUS_LOST;
 
@@ -51,6 +52,10 @@ public class ApplicationRunner {
 
     public void showSniperHasLostAuction() {
         driver.showsSniperStatus(STATUS_LOST);
+    }
+
+    public void hasShownSniperIsBidding() {
+        driver.showsSniperStatus(STATUS_BIDDING);
     }
 
     public void stop() {
