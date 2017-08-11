@@ -84,6 +84,11 @@ public class Main implements AuctionEventListener {
         SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_LOST));
     }
 
+    @Override
+    public void currentPrice(int price, int increment) {
+        // TODO something
+    }
+
     class MainWindow extends JFrame {
         public static final String SNIPER_STATUS_NAME = "sniper status";
 
