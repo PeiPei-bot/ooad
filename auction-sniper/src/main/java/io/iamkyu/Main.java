@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Kj Nam
  */
-public class Main {
+public class Main implements AuctionEventListener {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     private static final int ARG_HOSTNAME = 0;
     private static final int ARG_USERNAME = 1;
@@ -48,8 +48,9 @@ public class Main {
         disconnectWhenUICloses(connection);
         Chat chat = connection.getChatManager().createChat(
                 auctionId(itemId, connection),
-                (chat1, message) -> SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_LOST))
+                new AuctionMessageTranslator(this)
         );
+
         this.notToBeGCd = chat;
         chat.sendMessage(JOIN_COMMAND_FORMAT);
     }
@@ -76,6 +77,11 @@ public class Main {
 
     private void startUserInterface() throws InvocationTargetException, InterruptedException {
         SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
+    }
+
+    @Override
+    public void auctionClosed() {
+        SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_LOST));
     }
 
     class MainWindow extends JFrame {
