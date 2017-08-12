@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Kj Nam
  */
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     private static final int ARG_HOSTNAME = 0;
     private static final int ARG_USERNAME = 1;
@@ -48,7 +48,7 @@ public class Main implements AuctionEventListener {
         disconnectWhenUICloses(connection);
         Chat chat = connection.getChatManager().createChat(
                 auctionId(itemId, connection),
-                new AuctionMessageTranslator(this)
+                new AuctionMessageTranslator(new AuctionSniper(this))
         );
 
         this.notToBeGCd = chat;
@@ -80,13 +80,8 @@ public class Main implements AuctionEventListener {
     }
 
     @Override
-    public void auctionClosed() {
+    public void sniperLost() {
         SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_LOST));
-    }
-
-    @Override
-    public void currentPrice(int price, int increment) {
-        // TODO something
     }
 
     class MainWindow extends JFrame {
