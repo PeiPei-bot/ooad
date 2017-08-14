@@ -5,4 +5,6 @@ package io.iamkyu;
  */
 interface SniperListener {
     void sniperLost();
+
+    void sniperBidding();
 }

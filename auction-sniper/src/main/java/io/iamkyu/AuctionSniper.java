@@ -4,9 +4,11 @@ package io.iamkyu;
  * @author Kj Nam
  */
 class AuctionSniper implements AuctionEventListener {
+    private Auction auction;
     private SniperListener sniperListener;
 
-    public AuctionSniper(SniperListener sniperListener) {
+    public AuctionSniper(Auction auction, SniperListener sniperListener) {
+        this.auction = auction;
         this.sniperListener = sniperListener;
     }
 
@@ -17,6 +19,7 @@ class AuctionSniper implements AuctionEventListener {
 
     @Override
     public void currentPrice(int price, int increment) {
-        //TODO
+        auction.bid(price + increment);
+        sniperListener.sniperBidding();
     }
 }
