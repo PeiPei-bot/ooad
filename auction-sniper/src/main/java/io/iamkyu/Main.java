@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Kj Nam
  */
-public class Main implements SniperListener {
+public class Main {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     private static final int ARG_HOSTNAME = 0;
     private static final int ARG_USERNAME = 1;
@@ -31,6 +31,7 @@ public class Main implements SniperListener {
     public static final String STATUS_JOINING = "Joining";
     public static final String STATUS_LOST = "Lost";
     public static final String STATUS_BIDDING = "Bidding";
+    public static final String STATUS_WINNING = "Winning";
 
     private MainWindow ui;
     private Chat notToBeGCd;
@@ -51,7 +52,9 @@ public class Main implements SniperListener {
         this.notToBeGCd = chat;
 
         Auction auction = new XMPPAuction(chat);
-        chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
+        chat.addMessageListener(
+                new AuctionMessageTranslator(
+                        new AuctionSniper(auction, new SniperStateDisplayer())));
         auction.join();
     }
 
@@ -79,14 +82,26 @@ public class Main implements SniperListener {
         SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
     }
 
-    @Override
-    public void sniperLost() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_LOST));
-    }
+    public class SniperStateDisplayer implements SniperListener {
 
-    @Override
-    public void sniperBidding() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(STATUS_BIDDING));
+        @Override
+        public void sniperLost() {
+            showStatus(STATUS_LOST);
+        }
+
+        @Override
+        public void sniperBidding() {
+            showStatus(STATUS_BIDDING);
+        }
+
+        @Override
+        public void sniperWinning() {
+            showStatus(STATUS_WINNING);
+        }
+
+        private void showStatus(String status) {
+            SwingUtilities.invokeLater(() -> ui.showStatus(status));
+        }
     }
 
     class MainWindow extends JFrame {
