@@ -41,7 +41,7 @@ public class AuctionSniperTest {
         int increment = 25;
 
         //when
-        auctionSniper.currentPrice(price, increment);
+        auctionSniper.currentPrice(price, increment, AuctionEventListener.PriceSource.FromOtherBidder);
 
         //then
         verify(auction).bid(price + increment);

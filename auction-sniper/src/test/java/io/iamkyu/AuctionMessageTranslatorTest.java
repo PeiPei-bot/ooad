@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static io.iamkyu.ApplicationRunner.SNIPER_ID;
 import static org.mockito.Mockito.verify;
 
 
@@ -23,7 +24,7 @@ public class AuctionMessageTranslatorTest {
     @Before
     public void setUp() {
         message = new Message();
-        translator = new AuctionMessageTranslator(auctionEventListener);
+        translator = new AuctionMessageTranslator(SNIPER_ID, auctionEventListener);
     }
 
     @Test
@@ -39,15 +40,28 @@ public class AuctionMessageTranslatorTest {
     }
 
     @Test
-    public void notifiesBidDetailWhenPriceMessageReceived() {
+    public void notifiesBidDetailWhenPriceMessageReceivedFromOtherBidder() {
         //given
-        message.setBody("SQLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else");
+        message.setBody("SQLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;");
 
         //when
         translator.processMessage(UNUSED_CHAT, message);
 
         //then
-        // verify(auctionEventListener, times(1)).currentPrice(192, 7);
-        verify(auctionEventListener).currentPrice(192, 7);
+        verify(auctionEventListener).currentPrice(192, 7,
+                AuctionEventListener.PriceSource.FromOtherBidder);
+    }
+
+    @Test
+    public void notifiesBidDetailWhenPriceMessageReceivedFromSniper() {
+        //given
+        message.setBody(String.format("SQLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: %s;", SNIPER_ID));
+
+        //when
+        translator.processMessage(UNUSED_CHAT, message);
+
+        //then
+        verify(auctionEventListener).currentPrice(192, 7,
+                AuctionEventListener.PriceSource.FromSniper);
     }
 }

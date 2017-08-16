@@ -8,6 +8,7 @@ import static io.iamkyu.FakeAuctionServer.XMPP_HOSTNAME;
 import static io.iamkyu.Main.STATUS_BIDDING;
 import static io.iamkyu.Main.STATUS_JOINING;
 import static io.iamkyu.Main.STATUS_LOST;
+import static io.iamkyu.Main.STATUS_WINNING;
 
 /**
  * @author Kj Nam
@@ -62,5 +63,13 @@ public class ApplicationRunner {
         if (driver != null) {
             driver.dispose();
         }
+    }
+
+    public void hasShownSniperIsWinning() {
+        driver.showsSniperStatus(STATUS_WINNING);
+    }
+
+    public void showsSniperHasWonAuction() {
+        // TODO
     }
 }
