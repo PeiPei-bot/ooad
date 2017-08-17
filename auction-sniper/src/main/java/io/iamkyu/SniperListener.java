@@ -9,4 +9,8 @@ interface SniperListener {
     void sniperBidding();
 
     void sniperWinning();
+
+    void auctionClosed();
+
+    void sniperWon();
 }

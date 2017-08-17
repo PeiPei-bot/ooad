@@ -32,6 +32,7 @@ public class Main {
     public static final String STATUS_LOST = "Lost";
     public static final String STATUS_BIDDING = "Bidding";
     public static final String STATUS_WINNING = "Winning";
+    public static final String STATUS_WON = "Won";
 
     private MainWindow ui;
     private Chat notToBeGCd;
@@ -100,6 +101,17 @@ public class Main {
         @Override
         public void sniperWinning() {
             showStatus(STATUS_WINNING);
+        }
+
+        @Override
+        public void auctionClosed() {
+            showStatus(STATUS_LOST);
+
+        }
+
+        @Override
+        public void sniperWon() {
+            showStatus(STATUS_WON);
         }
 
         private void showStatus(String status) {

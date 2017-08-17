@@ -24,7 +24,7 @@ public class AuctionSniperTest {
     }
 
     @Test
-    public void reportsLostWhenAuctionCloses() {
+    public void reportsLostIfAuctionClosesImmediately() {
         //given
 
         //when
@@ -56,6 +56,20 @@ public class AuctionSniperTest {
 
         //when
         auctionSniper.currentPrice(price, increment, AuctionEventListener.PriceSource.FromSniper);
+
+        //then
+        verify(sniperListener).sniperWinning();
+    }
+
+    @Test
+    public void reportsWonIfAuctionClosesWhenWinning() {
+        //given
+        int price = 123;
+        int increment = 45;
+
+        //when
+        auctionSniper.currentPrice(price, increment, AuctionEventListener.PriceSource.FromSniper);
+        sniperListener.auctionClosed();
 
         //then
         verify(sniperListener).sniperWinning();
