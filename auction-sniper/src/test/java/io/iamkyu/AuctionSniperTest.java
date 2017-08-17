@@ -47,4 +47,17 @@ public class AuctionSniperTest {
         verify(auction).bid(price + increment);
         verify(sniperListener).sniperBidding();
     }
+
+    @Test
+    public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
+        //given
+        int price = 123;
+        int increment = 45;
+
+        //when
+        auctionSniper.currentPrice(price, increment, AuctionEventListener.PriceSource.FromSniper);
+
+        //then
+        verify(sniperListener).sniperWinning();
+    }
 }
